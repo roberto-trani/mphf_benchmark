@@ -1,7 +1,7 @@
-A Benchmark of Minimal Perfect Hash Functions Algorithms
+A Benchmark of Minimal Perfect Hash Function Algorithms
 ----
 
-This project aims to assess the performance of various *minimal perfect hash functions* algorithms.
+This project aims to assess the performance of various *minimal perfect hash function* algorithms.
 
 **Definition**:
 Given a set *S* of *n* distinct keys, a function *f* that bijectively maps the keys of *S* into the range
