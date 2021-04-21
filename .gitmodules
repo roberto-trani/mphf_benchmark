@@ -1,0 +1,18 @@
+[submodule "external/bbhash"]
+	path = external/bbhash
+	url = https://github.com/rizkg/BBHash
+[submodule "external/cmd_line_parser"]
+	path = external/cmd_line_parser
+	url = https://github.com/jermp/cmd_line_parser.git
+[submodule "external/cmph"]
+	path = external/cmph
+	url = https://github.com/bonitao/cmph
+[submodule "external/emphf"]
+	path = external/emphf
+	url = https://github.com/ot/emphf
+[submodule "external/sux"]
+	path = external/sux
+	url = https://github.com/vigna/sux
+[submodule "external/pthash"]
+	path = external/pthash
+	url = https://github.com/jermp/pthash.git
