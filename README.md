@@ -18,12 +18,13 @@ This repository has been created during the development of [*PTHash: Revisiting 
 **Tested Algorithms**
 
 Currently implemented/included algorithms are:
-* PTHash [1] [https://github.com/jermp/pthash](https://github.com/jermp/pthash)
+
+* PTHash [1] [jermp/pthash](https://github.com/jermp/pthash)
 * FCH [2]
-* CHD [3] [https://github.com/bonitao/cmph](https://github.com/bonitao/cmph)
-* EMPHF [4] [https://github.com/ot/emphf](https://github.com/ot/emphf)
-* BBHash [5] [github.com/rizkg/BBHash](github.com/rizkg/BBHash)
-* RecSplit [6] [https://github.com/vigna/sux](https://github.com/vigna/sux)
+* CHD [3] [bonitao/cmph](https://github.com/bonitao/cmph)
+* EMPHF [4] [ot/emphf](https://github.com/ot/emphf)
+* BBHash [5] [rizkg/BBHash](https://github.com/rizkg/BBHash)
+* RecSplit [6] [vigna/sux](https://github.com/vigna/sux)
 
 
 Compiling the code
