@@ -1,7 +1,7 @@
-A Benchmark of Minimal Perfect Hash Functions Algorithms
+A Benchmark of Minimal Perfect Hash Function Algorithms
 ----
 
-This project aims to assess the performance of various *minimal perfect hash functions* algorithms.
+This project aims to assess the performance of various *minimal perfect hash function* algorithms.
 
 **Definition**:
 Given a set *S* of *n* distinct keys, a function *f* that bijectively maps the keys of *S* into the range
@@ -13,17 +13,18 @@ The challenge is to design an algorithm which is efficient in three different as
 This benchmark reports the three main efficiency aspects of each algorithm:  construction time, lookup time, and space of representation.
 The minimal perfect hash functions are built using as keys either random 64-bits integers or line-delimited strings, which are read from the standard input.
 
-This repository has been created during the development of [*PTHash: Revisiting FCH Minimal Perfect Hashing*]() [1], a C++ library implementing fast and compact minimal perfect hash functions.
+This repository has been created during the development of [*PTHash: Revisiting FCH Minimal Perfect Hashing*](https://arxiv.org/abs/2104.10402) [1], a C++ library implementing fast and compact minimal perfect hash functions.
 
 **Tested Algorithms**
 
 Currently implemented/included algorithms are:
-* PTHash [1] [https://github.com/jermp/pt_hash](https://github.com/jermp/pthash)
+
+* PTHash [1] [jermp/pthash](https://github.com/jermp/pthash)
 * FCH [2]
-* CHD [3] [https://github.com/bonitao/cmph](https://github.com/bonitao/cmph)
-* EMPHF [4] [https://github.com/ot/emphf](https://github.com/ot/emphf)
-* BBHash [5] [github.com/rizkg/BBHash](github.com/rizkg/BBHash)
-* RecSplit [6] [https://github.com/vigna/sux](https://github.com/vigna/sux)
+* CHD [3] [bonitao/cmph](https://github.com/bonitao/cmph)
+* EMPHF [4] [ot/emphf](https://github.com/ot/emphf)
+* BBHash [5] [rizkg/BBHash](https://github.com/rizkg/BBHash)
+* RecSplit [6] [vigna/sux](https://github.com/vigna/sux)
 
 
 Compiling the code
@@ -65,7 +66,7 @@ Usage: ./mphf_benchmark [-h,--help] algorithm [-n num_keys] [--num_construction_
         Print this help text and silently exits.
 ```
 
-To actually use the benchmark, and reproduce Table 5 of the paper [*PTHash: Revisiting FCH Minimal Perfect Hashing*]() [1] (except [GOV](https://github.com/vigna/Sux4J), which is Java-based), execute the following commands
+To actually use the benchmark, and reproduce Table 5 of [*PTHash: Revisiting FCH Minimal Perfect Hashing*](https://arxiv.org/abs/2104.10402) [1] (except [GOV](https://github.com/vigna/Sux4J), which is Java-based), execute the following commands
 ```
 ./mphf_benchmark all -n 100000000 --num_construction_runs 5 --num_lookup_runs 5 --seed 1234567890
 ./mphf_benchmark all -n 1000000000 --num_construction_runs 5 --num_lookup_runs 5 --seed 1234567890
@@ -103,7 +104,7 @@ Authors
 
 References
 -------
-* [1] Giulio Ermanno Pibiri and Roberto Trani. *PTHash: Revisiting FCH Minimal Perfect Hashing*. In Proceedings of the 44th International
+* [1] Giulio Ermanno Pibiri and Roberto Trani. [*PTHash: Revisiting FCH Minimal Perfect Hashing*](https://arxiv.org/abs/2104.10402). In Proceedings of the 44th International
 Conference on Research and Development in Information Retrieval (SIGIR). 2021.
 * [2] Edward A Fox, Qi Fan Chen, and Lenwood S Heath. *A faster algorithm for constructing minimal perfect hash functions*. In Proceedings of the 15th International Conference on Research and Development in Information Retrieval (SIGIR). 1992.
 * [3] Djamal Belazzougui, Fabiano C Botelho, and Martin Dietzfelbinger. *Hash, displace, and compress*. In European Symposium on Algorithms. Springer. 2009.
