@@ -16,7 +16,8 @@ struct EMPHFHEMWrapper {
         }
 
         template <typename T>
-        EMPHFHEMWrapper build(const std::vector<T>& keys, uint64_t seed = 0, bool verbose = false) const {
+        EMPHFHEMWrapper build(const std::vector<T>& keys, uint64_t seed = 0,
+                              bool verbose = false) const {
             EMPHFHEMWrapper emphf_wrapper;
             build(emphf_wrapper, keys, seed, verbose);
             return emphf_wrapper;
@@ -53,10 +54,8 @@ struct EMPHFHEMWrapper {
         return 8 * ss.tellg();
     }
 
-
 private:
-    struct Adaptor
-    {
+    struct Adaptor {
         template <typename T>
         emphf::byte_range_t operator()(T const& s) const {
             const uint8_t* buf = reinterpret_cast<uint8_t const*>(&s);
@@ -64,7 +63,7 @@ private:
             return emphf::byte_range_t(buf, end);
         }
 
-//        template <>
+        //        template <>
         emphf::byte_range_t operator()(std::string const& s) const {
             const uint8_t* buf = reinterpret_cast<uint8_t const*>(s.c_str());
             const uint8_t* end = buf + sizeof(s.size()) + 1;

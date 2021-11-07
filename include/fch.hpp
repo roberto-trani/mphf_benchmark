@@ -72,7 +72,8 @@ struct FCH {
                     Buckets<T> buckets(keys, fch.m_bucketer);
                     if (verbose) {
                         chrono.stop();
-                        std::cerr << "Time spent in mapping " << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
+                        std::cerr << "Time spent in mapping "
+                                  << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
                     }
 
                     // ordering
@@ -80,7 +81,8 @@ struct FCH {
                     std::vector<uint64_t> buckets_order = buckets.get_order_by_size();
                     if (verbose) {
                         chrono.stop();
-                        std::cerr << "Time spent in ordering " << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
+                        std::cerr << "Time spent in ordering "
+                                  << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
                     }
 
                     // searching
@@ -98,13 +100,15 @@ struct FCH {
                         } catch (std::runtime_error& e) {
                             if (search_restart >= m_num_search_restarts) { throw e; }
                             if (verbose) {
-                                std::cerr << "fit_restart #" << (fit_restart+1) << " caused by: " << e.what() << std::endl;
+                                std::cerr << "fit_restart #" << (fit_restart + 1)
+                                          << " caused by: " << e.what() << std::endl;
                             }
                         }
                     }
                     if (verbose) {
                         chrono.stop();
-                        std::cerr << "Time spent in searching " << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
+                        std::cerr << "Time spent in searching "
+                                  << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
                     }
 
                     // encoding
@@ -112,13 +116,15 @@ struct FCH {
                     fch.m_shifts.init(shifts);
                     if (verbose) {
                         chrono.stop();
-                        std::cerr << "Time spent in encoding " << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
+                        std::cerr << "Time spent in encoding "
+                                  << TimeFormatter::format(chrono.elapsed_time(), 1) << std::endl;
                     }
                     break;
                 } catch (std::runtime_error& e) {
                     if (fit_restart >= m_num_restarts) { throw e; }
                     if (verbose) {
-                        std::cerr << "fit_restart #" << (fit_restart+1) << " caused by: " << e.what() << std::endl;
+                        std::cerr << "fit_restart #" << (fit_restart + 1)
+                                  << " caused by: " << e.what() << std::endl;
                     }
                 }
             }
@@ -156,12 +162,14 @@ struct FCH {
                     bucket_pattern.clear();
                     for (auto it = buckets.begin(bucket), it_end = buckets.end(bucket);
                          it != it_end; ++it) {
-                        uint64_t pos = fastmod::fastmod_u64(hasher(**it, seed), num_keys_M, num_keys);
+                        uint64_t pos =
+                            fastmod::fastmod_u64(hasher(**it, seed), num_keys_M, num_keys);
                         bucket_pattern.push_back(pos);
                     }  // end loop over keys of a bucket
 
                     std::sort(bucket_pattern.begin(), bucket_pattern.end());
-                    if (std::adjacent_find(bucket_pattern.begin(), bucket_pattern.end()) != bucket_pattern.end()) {
+                    if (std::adjacent_find(bucket_pattern.begin(), bucket_pattern.end()) !=
+                        bucket_pattern.end()) {
                         collision = true;
                         break;
                     }
@@ -171,7 +179,7 @@ struct FCH {
             }  // reseed
         }
 
-        template <typename T, bool debug=false>
+        template <typename T, bool debug = false>
         std::vector<uint64_t> search(const Buckets<T>& buckets,
                                      const std::vector<uint64_t>& buckets_order,
                                      uint64_t seed) const {
@@ -223,8 +231,9 @@ struct FCH {
                     // the first bucket has been already checked at the beginning of the search
                     // phase
                     if (bucket_attempt > 0) {
-                        std::sort(bucket_pattern.begin(),  bucket_pattern.end());
-                        if (std::adjacent_find(bucket_pattern.begin(), bucket_pattern.end()) != bucket_pattern.end()) {
+                        std::sort(bucket_pattern.begin(), bucket_pattern.end());
+                        if (std::adjacent_find(bucket_pattern.begin(), bucket_pattern.end()) !=
+                            bucket_pattern.end()) {
                             // if there is an in-bucket collision continue with the next attempt,
                             // which will change the pattern
                             continue;
@@ -232,8 +241,11 @@ struct FCH {
                     }
 
                     // consider only the valid shifts among the available ones
-                    for (uint64_t random_table_pos = filled_count; random_table_pos < num_keys; ++random_table_pos) {
-                        shift = fastmod::fastmod_u64(num_keys - bucket_pattern[0] + random_table[random_table_pos], num_keys_M, num_keys);
+                    for (uint64_t random_table_pos = filled_count; random_table_pos < num_keys;
+                         ++random_table_pos) {
+                        shift = fastmod::fastmod_u64(
+                            num_keys - bucket_pattern[0] + random_table[random_table_pos],
+                            num_keys_M, num_keys);
 
                         shift_found = true;
                         // I do not check the in-bucket collisions here as they were checked before

@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <cstring>
 
-
 namespace mphf::base_hasher {
 
 struct BaseHasher {

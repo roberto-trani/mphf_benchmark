@@ -11,7 +11,6 @@ struct Hasher {
         return m_base_hasher(&key, sizeof(T), seed);
     };
 
-    //    template <>
     inline uint64_t operator()(const std::string& key, uint64_t seed = 0) const {
         return m_base_hasher(key.data(), key.length(), seed);
     };

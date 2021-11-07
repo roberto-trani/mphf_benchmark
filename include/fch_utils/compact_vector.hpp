@@ -102,9 +102,8 @@ struct compact_vector {
 
         template <typename Iterator>
         void fill(Iterator begin, uint64_t n) {
-            if (!m_width) { throw std::runtime_error("width must be greater than 0"); }
-
-            for (uint64_t i = 0; i != n; ++i, ++begin) { push_back(*begin); }
+            if (!m_width) throw std::runtime_error("width must be greater than 0");
+            for (uint64_t i = 0; i != n; ++i, ++begin) push_back(*begin);
         }
 
         void set(uint64_t i, uint64_t v) {
@@ -268,8 +267,7 @@ struct compact_vector {
     }
 
     size_t bytes() const {
-        return sizeof(m_size) + sizeof(m_width) + sizeof(m_mask) +
-               vec_bytes(m_bits);
+        return sizeof(m_size) + sizeof(m_width) + sizeof(m_mask) + vec_bytes(m_bits);
     }
 
     void swap(compact_vector& other) {

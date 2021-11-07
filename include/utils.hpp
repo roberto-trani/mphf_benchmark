@@ -202,11 +202,9 @@ std::vector<T> create_random_distinct_keys(uint64_t num_keys, uint64_t seed) {
     return keys;
 }
 
-std::vector<std::string> read_keys_from_stream(std::istream & is, char delimiter='\n') {
+std::vector<std::string> read_keys_from_stream(std::istream& is, char delimiter = '\n') {
     std::vector<std::string> keys;
     std::string line;
-    while (getline(is, line, delimiter)) {
-        keys.push_back(line);
-    }
+    while (getline(is, line, delimiter)) { keys.push_back(line); }
     return keys;
 }
