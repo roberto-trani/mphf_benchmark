@@ -63,10 +63,9 @@ private:
             return emphf::byte_range_t(buf, end);
         }
 
-        //        template <>
         emphf::byte_range_t operator()(std::string const& s) const {
             const uint8_t* buf = reinterpret_cast<uint8_t const*>(s.c_str());
-            const uint8_t* end = buf + s.size() + 1; // add the null terminator
+            const uint8_t* end = buf + s.size() + 1;  // add the null terminator
             return emphf::byte_range_t(buf, end);
         }
     };
