@@ -1,5 +1,7 @@
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/roberto-trani/mphf_benchmark.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/roberto-trani/mphf_benchmark/context:cpp)
+
 A Benchmark of Minimal Perfect Hash Function Algorithms
-----
+=======================================================
 
 This project aims to assess the performance of various *minimal perfect hash function* algorithms.
 
@@ -13,7 +15,7 @@ The challenge is to design an algorithm which is efficient in three different as
 This benchmark reports the three main efficiency aspects of each algorithm:  construction time, lookup time, and space of representation.
 The minimal perfect hash functions are built using as keys either random 64-bits integers or line-delimited strings, which are read from the standard input.
 
-This repository has been created during the development of [*PTHash: Revisiting FCH Minimal Perfect Hashing*](https://arxiv.org/abs/2104.10402) [1], a C++ library implementing fast and compact minimal perfect hash functions.
+NOTE: This repository has been created during the development of [*PTHash: Revisiting FCH Minimal Perfect Hashing*](https://arxiv.org/abs/2104.10402) [1], a C++ library implementing fast and compact minimal perfect hash functions.
 
 **Tested Algorithms**
 
