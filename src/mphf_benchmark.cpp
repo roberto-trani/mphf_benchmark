@@ -108,6 +108,9 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     }
 
     if (algorithm == CHD || algorithm == ALL) {
+        testenv.test(mphf::CHDWrapper::Builder(1.0));
+        testenv.test(mphf::CHDWrapper::Builder(2.0));
+        testenv.test(mphf::CHDWrapper::Builder(3.0));
         testenv.test(mphf::CHDWrapper::Builder(4.0));
         testenv.test(mphf::CHDWrapper::Builder(5.0));
         testenv.test(mphf::CHDWrapper::Builder(6.0));
@@ -119,9 +122,12 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     }
 
     if (algorithm == BBhash || algorithm == ALL) {
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(5));
+        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0));
+        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0, 4));
+        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5));
+        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5, 4));
+        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0));
+        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0, 4));
     }
 
     if (algorithm == RecSplit || algorithm == ALL) {
@@ -165,6 +171,8 @@ int main(int argc, char** argv) {
     parser.add("verbose", "Verbose output during construction. (default: false)", "--verbose",
                true);
     parser.add("seed", "Seed used for construction. (default: 0)", "--seed", false);
+    parser.add("generator", "The method of generating keys, one of: "
+                "`64` (default), `xs32` (xor-shift 32), `xs64` (xor-shift 64)", "--gen", false);
     if (!parser.parse()) { return 1; }
 
     std::string algorithm_name = parser.get<std::string>("algorithm");
@@ -175,6 +183,7 @@ int main(int argc, char** argv) {
     uint32_t num_lookup_runs =
         parser.parsed("num_lookup_runs") ? parser.get<uint64_t>("num_lookup_runs") : 1;
     uint64_t seed = parser.parsed("seed") ? parser.get<uint64_t>("seed") : 0;
+    std::string generator = parser.parsed("generator") ? parser.get<std::string>("generator") : "64";
 
     // recognize the algorithm
     const std::unordered_map<std::string, Algorithm> name_to_algorithm{
@@ -211,17 +220,28 @@ int main(int argc, char** argv) {
                                              num_lookup_runs, seed, verbose);
         test_algorithms(testenv, algorithm);
     } else {
-        std::cout << "Generating random keys of 64 bits" << std::endl;
+        if (generator != "64" && generator != "xs32" && generator != "xs64") {
+            std::cerr << "Wrong generator name." << std::endl;
+            return 1;
+        }
         if (num_keys == 0) {
             std::cerr << "The number of keys cannot be zero" << std::endl;
             return 1;
         }
-        std::vector<uint64_t> keys = create_random_distinct_keys<uint64_t>(num_keys, seed);
-        std::cout << "Generated " << keys.size() << " keys" << std::endl;
-        TestEnvironment<uint64_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
-                                          seed, verbose);
-        test_algorithms(testenv, algorithm);
+        std::cout << "Generating " << num_keys << " random keys by " << generator << " generator (the name of the generator contains the size of keys in bits)." << std::endl;
+        if (generator == "64" || generator == "xs64") {
+            std::vector<uint64_t> keys = generator == "64" ?
+                        create_random_distinct_keys<uint64_t>(num_keys, seed) :
+                        create_xorshift64_keys(num_keys, seed);
+            TestEnvironment<uint64_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
+                                              seed, verbose);
+            test_algorithms(testenv, algorithm);
+        } else {
+            std::vector<uint32_t> keys = create_xorshift32_keys(num_keys, seed);
+            TestEnvironment<uint32_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
+                                              seed, verbose);
+            test_algorithms(testenv, algorithm);
+        }
     }
-
     return 0;
 }
