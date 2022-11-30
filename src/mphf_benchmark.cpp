@@ -95,39 +95,43 @@ struct TestEnvironment {
 enum Algorithm { FCH, CHD, BBhash, EMPHF, RecSplit, PTHash, ALL };
 
 template <typename T>
-void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorithm) {
+void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorithm, unsigned variant) {
     using Hasher = mphf::hasher::Hasher<mphf::base_hasher::Murmur2BaseHasher>;
 
     // test the algorithms
     if (algorithm == FCH || algorithm == ALL) {
-        testenv.test(mphf::FCH<Hasher>::Builder(3, 0.6, 0.3));
-        testenv.test(mphf::FCH<Hasher>::Builder(4, 0.6, 0.3));
-        testenv.test(mphf::FCH<Hasher>::Builder(5, 0.6, 0.3));
-        testenv.test(mphf::FCH<Hasher>::Builder(6, 0.6, 0.3));
-        testenv.test(mphf::FCH<Hasher>::Builder(7, 0.6, 0.3));
+        if (variant == 3 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(3, 0.6, 0.3));
+        if (variant == 4 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(4, 0.6, 0.3));
+        if (variant == 5 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(5, 0.6, 0.3));
+        if (variant == 6 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(6, 0.6, 0.3));
+        if (variant == 7 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(7, 0.6, 0.3));
     }
 
     if (algorithm == CHD || algorithm == ALL) {
-        testenv.test(mphf::CHDWrapper::Builder(1.0));
-        testenv.test(mphf::CHDWrapper::Builder(2.0));
-        testenv.test(mphf::CHDWrapper::Builder(3.0));
-        testenv.test(mphf::CHDWrapper::Builder(4.0));
-        testenv.test(mphf::CHDWrapper::Builder(5.0));
-        testenv.test(mphf::CHDWrapper::Builder(6.0));
+        if (variant == 1 || variant == 0) testenv.test(mphf::CHDWrapper::Builder(1.0));
+        if (variant == 2 || variant == 0) testenv.test(mphf::CHDWrapper::Builder(2.0));
+        if (variant == 3 || variant == 0) testenv.test(mphf::CHDWrapper::Builder(3.0));
+        if (variant == 4 || variant == 0) testenv.test(mphf::CHDWrapper::Builder(4.0));
+        if (variant == 5 || variant == 0) testenv.test(mphf::CHDWrapper::Builder(5.0));
+        if (variant == 6 || variant == 0) testenv.test(mphf::CHDWrapper::Builder(6.0));
     }
 
     if (algorithm == EMPHF || algorithm == ALL) {
-        testenv.test(mphf::EMPHFWrapper::Builder());
-        testenv.test(mphf::EMPHFHEMWrapper::Builder());
+        if (variant == 1 || variant == 0) testenv.test(mphf::EMPHFWrapper::Builder());
+        if (variant == 2 || variant == 0) testenv.test(mphf::EMPHFHEMWrapper::Builder());
     }
 
     if (algorithm == BBhash || algorithm == ALL) {
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0, 4));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5, 4));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0));
-        testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0, 4));
+        if (variant == 1 || variant == 0) {
+            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0));
+            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0, 4));
+        }
+        //testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5));
+        //testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5, 4));
+        if (variant == 2 || variant == 0) {
+            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0));
+            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0, 4));
+        }
     }
 
     if (algorithm == RecSplit || algorithm == ALL) {
@@ -138,18 +142,18 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
             std::cerr << "RecSplit algorithm is not implemented on Apple" << std::endl;
         }
 #else
-        testenv.test(typename mphf::RecSplitWrapper<5>::Builder(5));
-        testenv.test(typename mphf::RecSplitWrapper<8>::Builder(100));
-        testenv.test(typename mphf::RecSplitWrapper<12>::Builder(9));
+        if (variant == 1 || variant == 5 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<5>::Builder(5));
+        if (variant == 2 || variant == 8 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<8>::Builder(100));
+        if (variant == 3 || variant == 12 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<12>::Builder(9));
 #endif
     }
 
     if (algorithm == PTHash || algorithm == ALL) {
-        testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99));
-        testenv.test(
+        if (variant == 1 || variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99));
+        if (variant == 2 || variant == 11 || variant == 0) testenv.test(
             typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(11.0, 0.88));
-        testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99));
-        testenv.test(
+        if (variant == 3 || variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99));
+        if (variant == 4 || variant == 7 || variant == 0) testenv.test(
             typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(7.0, 0.94));
     }
 }
@@ -159,8 +163,11 @@ int main(int argc, char** argv) {
     parser.add("algorithm",
                "The name of the algorithm to run. One among `fch`, `chd`, "
                "`bbhash`, `emphf`, `recsplit`, `pthash`.");
+    parser.add("variant",
+               "Variant of the selected algorithm to test, interpretation depents on method (default: 0 = all variants).",
+               "-v", false);
     parser.add("num_keys",
-               "The number of 64-bit random keys to use for the test. "
+               "The number of random keys to use for the test. "
                "If it is not provided, then keys are read from the input (one "
                "per line).",
                "-n", false);
@@ -176,6 +183,7 @@ int main(int argc, char** argv) {
     if (!parser.parse()) { return 1; }
 
     std::string algorithm_name = parser.get<std::string>("algorithm");
+    unsigned variant = parser.parsed("variant") ? parser.get<uint64_t>("variant") : 0;
     uint64_t num_keys = parser.parsed("num_keys") ? parser.get<uint64_t>("num_keys") : 0;
     bool verbose = parser.parsed("verbose") && parser.get<bool>("verbose");
     uint32_t num_construction_runs =
@@ -218,7 +226,7 @@ int main(int argc, char** argv) {
                   << std::round(average_size * 100) / 100 << std::endl;
         TestEnvironment<std::string> testenv(std::move(keys), num_construction_runs,
                                              num_lookup_runs, seed, verbose);
-        test_algorithms(testenv, algorithm);
+        test_algorithms(testenv, algorithm, variant);
     } else {
         if (generator != "64" && generator != "xs32" && generator != "xs64") {
             std::cerr << "Wrong generator name." << std::endl;
@@ -235,12 +243,12 @@ int main(int argc, char** argv) {
                         create_xorshift64_keys(num_keys, seed);
             TestEnvironment<uint64_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
                                               seed, verbose);
-            test_algorithms(testenv, algorithm);
+            test_algorithms(testenv, algorithm, variant);
         } else {
             std::vector<uint32_t> keys = create_xorshift32_keys(num_keys, seed);
             TestEnvironment<uint32_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
                                               seed, verbose);
-            test_algorithms(testenv, algorithm);
+            test_algorithms(testenv, algorithm, variant);
         }
     }
     return 0;
