@@ -12,7 +12,7 @@ namespace mphf {
 template <typename Encoder>
 struct PTHashWrapper {
     struct Builder {
-        Builder(float c, float alpha) : m_c(c), m_alpha(alpha) {
+        Builder(float c, float alpha,uint64_t num_threads = 1) : m_c(c), m_alpha(alpha), m_num_threads(num_threads) {
             if (c < 1.45) { throw std::invalid_argument("`c` must be greater or equal to 1.45"); }
             if (alpha <= 0 || 1 < alpha) {
                 throw std::invalid_argument(
@@ -23,6 +23,7 @@ struct PTHashWrapper {
             ss << "PTHash(encoder=" << Encoder::name();
             ss << ", c=" << c;
             ss << ", alpha=" << alpha;
+            ss << ", threads=" << num_threads;
             ss << ")";
             m_name = ss.str();
         }
@@ -41,6 +42,7 @@ struct PTHashWrapper {
             pthash::build_configuration config;
             config.c = m_c;
             config.alpha = m_alpha;
+            config.num_threads = m_num_threads;
             config.verbose_output = verbose;
             config.seed = seed;
 
@@ -54,6 +56,7 @@ struct PTHashWrapper {
     private:
         float m_c, m_alpha;
         std::string m_name;
+        uint64_t m_num_threads;
     };
 
     template <typename T>

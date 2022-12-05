@@ -96,6 +96,9 @@ enum Algorithm { FCH, CHD, BBhash, EMPHF, RecSplit, PTHash, ALL };
 
 template <typename T>
 void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorithm, unsigned variant) {
+    unsigned int threads_num = std::max(std::thread::hardware_concurrency(), 1u);
+    std::cout << threads_num << " threads available for multi-threaded calculations";
+
     using Hasher = mphf::hasher::Hasher<mphf::base_hasher::Murmur2BaseHasher>;
 
     // test the algorithms
@@ -122,15 +125,15 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     }
 
     if (algorithm == BBhash || algorithm == ALL) {
-        if (variant == 1 || variant == 0) {
-            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0));
-            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0, 4));
-        }
+        if (variant == 1 || variant == 0) testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0));
         //testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5));
         //testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5, 4));
-        if (variant == 2 || variant == 0) {
-            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0));
-            testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0, 4));
+        if (variant == 2 || variant == 0) testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0));
+        if (threads_num > 1) {
+            if (variant == 3 || variant == 0)
+                testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0, threads_num));
+            if (variant == 4 || variant == 0)
+                testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0, threads_num));
         }
     }
 
@@ -149,12 +152,16 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     }
 
     if (algorithm == PTHash || algorithm == ALL) {
-        if (variant == 1 || variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99));
-        if (variant == 2 || variant == 11 || variant == 0) testenv.test(
-            typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(11.0, 0.88));
-        if (variant == 3 || variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99));
-        if (variant == 4 || variant == 7 || variant == 0) testenv.test(
-            typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(7.0, 0.94));
+        if (variant == 1 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99));
+        if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(11.0, 0.88));
+        if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99));
+        if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(7.0, 0.94));
+        if (threads_num > 1) {
+            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99, threads_num));
+            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num));
+            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99, threads_num));
+            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num));
+        }
     }
 }
 
@@ -165,7 +172,7 @@ int main(int argc, char** argv) {
                "`bbhash`, `emphf`, `recsplit`, `pthash`.");
     parser.add("variant",
                "Variant of the selected algorithm to test, interpretation depents on method (default: 0 = all variants).",
-               "-v", false);
+               "--variant", false);
     parser.add("num_keys",
                "The number of random keys to use for the test. "
                "If it is not provided, then keys are read from the input (one "
