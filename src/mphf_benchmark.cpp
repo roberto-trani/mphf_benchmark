@@ -156,6 +156,12 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
         if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(11.0, 0.88));
         if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::elias_fano>::Builder(6.0, 0.99));
         if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(7.0, 0.94));
+        if (threads_num > 1) {
+            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::compact_compact>::Builder(7.0, 0.99, threads_num));
+            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num));
+            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::elias_fano>::Builder(6.0, 0.99, threads_num));
+            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num));
+        }
     }
 
     if (algorithm == PPTHash || algorithm == ALL) {

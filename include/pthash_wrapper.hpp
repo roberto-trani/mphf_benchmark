@@ -49,7 +49,8 @@ struct PTHashWrapper {
             config.c = m_c;
             config.alpha = m_alpha;
             config.num_threads = m_num_threads;
-            config.num_partitions = m_partitions;
+            //config.num_partitions = m_partitions;
+            config.minimal_output = true;
             config.verbose_output = verbose;
             config.seed = seed;
 
@@ -79,8 +80,8 @@ struct PTHashWrapper {
 
 private:
     std::conditional_t<partitioned,
-        pthash::partitioned_mphf<pthash::murmurhash2_64, Encoder>,
-        pthash::single_mphf<pthash::murmurhash2_64, Encoder>
+        pthash::partitioned_phf<pthash::murmurhash2_64, Encoder, true>,
+        pthash::single_phf<pthash::murmurhash2_64, Encoder, true>
     > m_pthash;
 };
 
