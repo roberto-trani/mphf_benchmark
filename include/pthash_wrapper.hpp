@@ -9,12 +9,11 @@
 
 namespace mphf {
 
-template <bool partitioned, typename Encoder>
+template <typename Encoder>
 struct PTHashWrapper {
     struct Builder {
-        Builder(float c, float alpha, uint64_t num_threads = 1, uint64_t partitions = 0)
-            : m_c(c), m_alpha(alpha), m_num_threads(num_threads),
-              m_partitions(partitions == 0 ? num_threads : partitions)
+        Builder(float c, float alpha, uint64_t num_threads = 1)
+            : m_c(c), m_alpha(alpha), m_num_threads(num_threads)
         {
             if (c < 1.45) { throw std::invalid_argument("`c` must be greater or equal to 1.45"); }
             if (alpha <= 0 || 1 < alpha) {
@@ -26,10 +25,7 @@ struct PTHashWrapper {
             ss << "PTHash(encoder=" << Encoder::name();
             ss << ", c=" << c;
             ss << ", alpha=" << alpha;
-            if (partitioned) {
-                ss << ", threads=" << num_threads;
-                ss << ", partitions=" << m_partitions;
-            }
+            ss << ", threads=" << num_threads;
             ss << ")";
             m_name = ss.str();
         }
@@ -65,7 +61,6 @@ struct PTHashWrapper {
         float m_c, m_alpha;
         std::string m_name;
         uint64_t m_num_threads;
-        uint64_t m_partitions;
     };
 
     template <typename T>
@@ -79,10 +74,12 @@ struct PTHashWrapper {
     }
 
 private:
-    std::conditional_t<partitioned,
+    pthash::single_phf<pthash::murmurhash2_64, Encoder, true> m_pthash;
+
+    /*std::conditional_t<partitioned,
         pthash::partitioned_phf<pthash::murmurhash2_64, Encoder, true>,
         pthash::single_phf<pthash::murmurhash2_64, Encoder, true>
-    > m_pthash;
+    > m_pthash;*/
 };
 
 }  // namespace mphf
