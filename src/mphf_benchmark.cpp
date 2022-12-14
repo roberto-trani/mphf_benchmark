@@ -165,15 +165,16 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     }
 
     if (algorithm == PPTHash || algorithm == ALL) {
-        if (variant == 1 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::compact_compact>::Builder(7.0, 0.99, 1, threads_num));
-        if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(11.0, 0.88, 1, threads_num));
-        if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::elias_fano>::Builder(6.0, 0.99, 1, threads_num));
-        if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(7.0, 0.94, 1, threads_num));
+        auto keys_num = testenv.keys.size();
+        if (variant == 1 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::compact_compact>::Builder(7.0, 0.99, 1, keys_num));
+        if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(11.0, 0.88, 1, keys_num));
+        if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::elias_fano>::Builder(6.0, 0.99, 1, keys_num));
+        if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(7.0, 0.94, 1, keys_num));
         if (threads_num > 1) {
-            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::compact_compact>::Builder(7.0, 0.99, threads_num));
-            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num));
-            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::elias_fano>::Builder(6.0, 0.99, threads_num));
-            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num));
+            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::compact_compact>::Builder(7.0, 0.99, threads_num, keys_num));
+            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num, keys_num));
+            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::elias_fano>::Builder(6.0, 0.99, threads_num, keys_num));
+            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num, keys_num));
         }
     }
 }

@@ -12,9 +12,8 @@ namespace mphf {
 template <bool partitioned, typename Encoder>
 struct PTHashWrapper {
     struct Builder {
-        Builder(float c, float alpha, uint64_t num_threads = 1, uint64_t partitions = 0)
-            : m_c(c), m_alpha(alpha), m_num_threads(num_threads),
-              m_partitions(partitions == 0 ? num_threads : partitions)
+        Builder(float c, float alpha, uint64_t num_threads = 1, uint64_t num_of_keys = 0)
+            : m_c(c), m_alpha(alpha), m_num_threads(num_threads)
         {
             if (c < 1.45) { throw std::invalid_argument("`c` must be greater or equal to 1.45"); }
             if (alpha <= 0 || 1 < alpha) {
@@ -23,11 +22,24 @@ struct PTHashWrapper {
             }
 
             std::stringstream ss;
-            ss << "PTHash(encoder=" << Encoder::name();
+            ss << (partitioned ? "P" : "") << "PTHash(encoder=" << Encoder::name();
             ss << ", c=" << c;
             ss << ", alpha=" << alpha;
+            ss << ", threads=" << num_threads;
             if (partitioned) {
-                ss << ", threads=" << num_threads;
+                num_of_keys /= 5000000;
+                if (num_of_keys == 0) {
+                    m_partitions = 1;
+                } else {
+                    num_of_keys--;  // calc nearest power of two
+                    num_of_keys |= num_of_keys >> 1;
+                    num_of_keys |= num_of_keys >> 2;
+                    num_of_keys |= num_of_keys >> 4;
+                    num_of_keys |= num_of_keys >> 8;
+                    num_of_keys |= num_of_keys >> 16;
+                    num_of_keys++;
+                    m_partitions = num_of_keys;
+                }
                 ss << ", partitions=" << m_partitions;
             }
             ss << ")";
@@ -49,7 +61,7 @@ struct PTHashWrapper {
             config.c = m_c;
             config.alpha = m_alpha;
             config.num_threads = m_num_threads;
-            //config.num_partitions = m_partitions;
+            if (partitioned) config.num_partitions = m_partitions;
             config.minimal_output = true;
             config.verbose_output = verbose;
             config.seed = seed;
