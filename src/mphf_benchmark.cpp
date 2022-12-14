@@ -92,7 +92,7 @@ struct TestEnvironment {
     const bool verbose;
 };
 
-enum Algorithm { FCH, CHD, BBhash, EMPHF, RecSplit, PTHash, ALL };
+enum Algorithm { FCH, CHD, BBhash, EMPHF, RecSplit, PTHash, PPTHash, ALL };
 
 template <typename T>
 void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorithm, unsigned variant) {
@@ -152,15 +152,28 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     }
 
     if (algorithm == PTHash || algorithm == ALL) {
-        if (variant == 1 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99));
-        if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(11.0, 0.88));
-        if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99));
-        if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(7.0, 0.94));
+        if (variant == 1 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::compact_compact>::Builder(7.0, 0.99));
+        if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(11.0, 0.88));
+        if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::elias_fano>::Builder(6.0, 0.99));
+        if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(7.0, 0.94));
         if (threads_num > 1) {
-            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::compact_compact>::Builder(7.0, 0.99, threads_num));
-            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num));
-            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::elias_fano>::Builder(6.0, 0.99, threads_num));
-            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num));
+            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::compact_compact>::Builder(7.0, 0.99, threads_num));
+            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num));
+            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::elias_fano>::Builder(6.0, 0.99, threads_num));
+            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<false, pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num));
+        }
+    }
+
+    if (algorithm == PPTHash || algorithm == ALL) {
+        if (variant == 1 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::compact_compact>::Builder(7.0, 0.99, 1, threads_num));
+        if (variant == 2 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(11.0, 0.88, 1, threads_num));
+        if (variant == 3 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::elias_fano>::Builder(6.0, 0.99, 1, threads_num));
+        if (variant == 4 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(7.0, 0.94, 1, threads_num));
+        if (threads_num > 1) {
+            if (variant == 5 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::compact_compact>::Builder(7.0, 0.99, threads_num));
+            if (variant == 6 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(11.0, 0.88, threads_num));
+            if (variant == 7 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::elias_fano>::Builder(6.0, 0.99, threads_num));
+            if (variant == 8 || variant == 0) testenv.test(typename mphf::PTHashWrapper<true, pthash::dictionary_dictionary>::Builder(7.0, 0.94, threads_num));
         }
     }
 }
@@ -203,7 +216,7 @@ int main(int argc, char** argv) {
     // recognize the algorithm
     const std::unordered_map<std::string, Algorithm> name_to_algorithm{
         {"fch", FCH},           {"chd", CHD},       {"bbhash", BBhash}, {"emphf", EMPHF},
-        {"recsplit", RecSplit}, {"pthash", PTHash}, {"all", ALL},
+        {"recsplit", RecSplit}, {"pthash", PTHash}, {"ppthash", PPTHash}, {"all", ALL},
     };
     auto algorithm_it = name_to_algorithm.find(algorithm_name);
     if (algorithm_it == name_to_algorithm.end()) {
