@@ -24,7 +24,7 @@ template <typename T>
 struct TestEnvironment {
     TestEnvironment(std::vector<T>&& keys, uint32_t num_construction_runs = 1,
                     uint32_t num_lookup_runs = 5, uint64_t seed = 0, bool verbose = false)
-        : keys(keys)
+        : keys(std::move(keys))
         , num_construction_runs(num_construction_runs)
         , num_lookup_runs(num_lookup_runs)
         , seed(seed)
