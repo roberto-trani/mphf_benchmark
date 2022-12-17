@@ -181,7 +181,7 @@ int main(int argc, char** argv) {
                "The name of the algorithm to run. One among `fch`, `chd`, "
                "`bbhash`, `emphf`, `recsplit`, `pthash`, `ppthash`.");
     parser.add("variant",
-               "Variant of the selected algorithm to test, interpretation depends on method (default: 0 = all variants).",
+               "Variant of the selected algorithm to test, interpretation depends on method. (default: 0 = all variants)",
                "--variant", false);
     parser.add("num_keys",
                "The number of random keys to use for the test. "
