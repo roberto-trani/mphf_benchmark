@@ -202,6 +202,32 @@ std::vector<T> create_random_distinct_keys(uint64_t num_keys, uint64_t seed) {
     return keys;
 }
 
+std::vector<uint32_t> create_xorshift32_keys(uint32_t num_keys, uint32_t seed) {
+    if (seed == 0) seed = 1234;
+    std::vector<uint32_t> result;
+    result.reserve(num_keys);
+    for (uint32_t i = 0; i < num_keys; ++i) {
+        seed ^= seed << 13;
+        seed ^= seed >> 17;
+        seed ^= seed << 5;
+        result.push_back(seed);
+    }
+    return result;
+}
+
+std::vector<uint64_t> create_xorshift64_keys(uint64_t num_keys, uint64_t seed) {
+    if (seed == 0) seed = 1234;
+    std::vector<uint64_t> result;
+    result.reserve(num_keys);
+    for (uint64_t i = 0; i < num_keys; ++i) {
+        seed ^= seed << 13;
+        seed ^= seed >> 7;
+        seed ^= seed << 17;
+        result.push_back(seed);
+    }
+    return result;
+}
+
 std::vector<std::string> read_keys_from_stream(std::istream& is, char delimiter = '\n') {
     std::vector<std::string> keys;
     std::string line;

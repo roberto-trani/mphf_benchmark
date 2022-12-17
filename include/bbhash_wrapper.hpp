@@ -10,7 +10,7 @@ namespace mphf {
 template <typename T, typename Hasher>
 struct BBhashWrapper {
     struct Builder {
-        Builder(uint32_t gamma, uint32_t num_threads = 1)
+        Builder(double gamma, uint32_t num_threads = 1)
             : m_gamma(gamma), m_num_threads(num_threads) {
             if (gamma < 1) { throw std::invalid_argument("`gamma` must be greater or equal to 1"); }
             if (num_threads < 1) {
@@ -43,7 +43,8 @@ struct BBhashWrapper {
         }
 
     private:
-        uint32_t m_gamma, m_num_threads;
+        double m_gamma;
+        uint32_t m_num_threads;
         std::string m_name;
     };
 

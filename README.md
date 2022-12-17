@@ -50,22 +50,37 @@ Usage
 
 Execute `./mphf_benchmark -h` to print an help message describing all command line parameters, whose output is as follows
 ```
-Usage: ./mphf_benchmark [-h,--help] algorithm [-n num_keys] [--num_construction_runs num_construction_runs] [--num_lookup_runs num_lookup_runs] [--verbose] [--seed seed]
+Usage: ./mphf_benchmark [-h,--help] algorithm [--variant variant] [-n num_keys] [--num_construction_runs num_construction_runs] [--num_lookup_runs num_lookup_runs] [--verbose] [--seed seed] [--threads threads] [--gen generator]
 
  algorithm
-        The name of the algorithm to run. One among `fch`, `chd`, `bbhash`, `emphf`, `recsplit`, `pthash`.
+	The name of the algorithm to run. One among `fch`, `chd`, `bbhash`, `emphf`, `recsplit`, `pthash`, `ppthash`.
+
+ [--variant variant]
+	Variant of the selected algorithm to test, interpretation depends on method (default: 0 = all variants).
+
  [-n num_keys]
-        The number of 64-bit random keys to use for the test. If it is not provided, then keys are read from the input (one per line).
+	The number of random keys to use for the test. If it is not provided, then keys are read from the input (one per line).
+
  [--num_construction_runs num_construction_runs]
-        Number of times to perform the construction. (default: 1)
+	Number of times to perform the construction. (default: 1)
+
  [--num_lookup_runs num_lookup_runs]
-        Number of times to perform the lookup test. (default: 1)
+	Number of times to perform the lookup test. (default: 1)
+
  [--verbose]
-        Verbose output during construction. (default: false)
+	Verbose output during construction. (default: false)
+
  [--seed seed]
-        Seed used for construction. (default: 0)
+	Seed used for construction. (default: 0)
+
+ [--threads threads]
+	Number of threads used in multi-threaded calculations. (default: 0 = auto)
+
+ [--gen generator]
+	The method of generating keys, one of: `64` (default), `xs32` (xor-shift 32), `xs64` (xor-shift 64)
+
  [-h,--help]
-        Print this help text and silently exits.
+	Print this help text and silently exits.
 ```
 
 To actually use the benchmark, and reproduce Table 5 of [*PTHash: Revisiting FCH Minimal Perfect Hashing*](https://arxiv.org/abs/2104.10402) [1] (except [GOV](https://github.com/vigna/Sux4J), which is Java-based), execute the following commands
@@ -102,6 +117,7 @@ Authors
 -------
 * [Giulio Ermanno Pibiri](http://pages.di.unipi.it/pibiri/), <giulio.ermanno.pibiri@isti.cnr.it>
 * [Roberto Trani](), <roberto.trani@isti.cnr.it>
+* some contribution has also been made by [Piotr Beling](http://pbeling.w8.pl/), <piotr.beling@wmii.uni.lodz.pl>
 
 
 References
