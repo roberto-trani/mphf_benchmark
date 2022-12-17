@@ -258,7 +258,7 @@ int main(int argc, char** argv) {
             std::cerr << "The number of keys cannot be zero" << std::endl;
             return 1;
         }
-        std::cout << "Generating " << num_keys << " random keys by " << generator << " generator (the name of the generator contains the size of keys in bits)." << std::endl;
+        std::cout << "Generating " << num_keys << " random keys by " << generator << " generator (the name of the generator contains the size of each key in bits)." << std::endl;
         if (generator == "64" || generator == "xs64") {
             std::vector<uint64_t> keys = generator == "64" ?
                         create_random_distinct_keys<uint64_t>(num_keys, seed) :
