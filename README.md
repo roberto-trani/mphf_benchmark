@@ -117,7 +117,7 @@ Authors
 -------
 * [Giulio Ermanno Pibiri](http://pages.di.unipi.it/pibiri/), <giulio.ermanno.pibiri@isti.cnr.it>
 * [Roberto Trani](), <roberto.trani@isti.cnr.it>
-* some contribution has also been made by [Peter Beling](http://pbeling.w8.pl/), <piotr.beling@wmii.uni.lodz.pl>
+* some contribution has also been made by [Piotr Beling](http://pbeling.w8.pl/), <piotr.beling@wmii.uni.lodz.pl>
 
 
 References
