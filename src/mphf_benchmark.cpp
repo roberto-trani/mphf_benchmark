@@ -95,12 +95,8 @@ struct TestEnvironment {
 enum Algorithm { FCH, CHD, BBhash, EMPHF, RecSplit, PTHash, PPTHash, ALL };
 
 template <typename T>
-void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorithm, unsigned variant) {
-    unsigned int threads_num = std::max(std::thread::hardware_concurrency(), 1u);
-    std::cout << threads_num << " threads available for multi-threaded calculations" << std::endl;
-
+void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorithm, unsigned variant, unsigned threads_num) {
     using Hasher = mphf::hasher::Hasher<mphf::base_hasher::Murmur2BaseHasher>;
-
     // test the algorithms
     if (algorithm == FCH || algorithm == ALL) {
         if (variant == 3 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(3, 0.6, 0.3));
@@ -185,7 +181,7 @@ int main(int argc, char** argv) {
                "The name of the algorithm to run. One among `fch`, `chd`, "
                "`bbhash`, `emphf`, `recsplit`, `pthash`, `ppthash`.");
     parser.add("variant",
-               "Variant of the selected algorithm to test, interpretation depents on method (default: 0 = all variants).",
+               "Variant of the selected algorithm to test, interpretation depends on method (default: 0 = all variants).",
                "--variant", false);
     parser.add("num_keys",
                "The number of random keys to use for the test. "
@@ -199,6 +195,7 @@ int main(int argc, char** argv) {
     parser.add("verbose", "Verbose output during construction. (default: false)", "--verbose",
                true);
     parser.add("seed", "Seed used for construction. (default: 0)", "--seed", false);
+    parser.add("threads", "Number of threads used in multi-threaded calculations. (default: 0 = auto)", "--threads", false);
     parser.add("generator", "The method of generating keys, one of: "
                 "`64` (default), `xs32` (xor-shift 32), `xs64` (xor-shift 64)", "--gen", false);
     if (!parser.parse()) { return 1; }
@@ -236,6 +233,10 @@ int main(int argc, char** argv) {
     }
     Algorithm algorithm = algorithm_it->second;
 
+    unsigned threads_num = parser.parsed("threads") ? parser.get<unsigned>("threads") : 0;
+    if (threads_num == 0) threads_num = std::max(std::thread::hardware_concurrency(), 1u);
+    std::cout << threads_num << " threads available for multi-threaded calculations" << std::endl;
+
     if (!parser.parsed("num_keys")) {
         std::cout << "Reading keys from stdin" << std::endl;
         std::vector<std::string> keys = read_keys_from_stream(std::cin, '\n');
@@ -247,7 +248,7 @@ int main(int argc, char** argv) {
                   << std::round(average_size * 100) / 100 << std::endl;
         TestEnvironment<std::string> testenv(std::move(keys), num_construction_runs,
                                              num_lookup_runs, seed, verbose);
-        test_algorithms(testenv, algorithm, variant);
+        test_algorithms(testenv, algorithm, variant, threads_num);
     } else {
         if (generator != "64" && generator != "xs32" && generator != "xs64") {
             std::cerr << "Wrong generator name." << std::endl;
@@ -264,12 +265,12 @@ int main(int argc, char** argv) {
                         create_xorshift64_keys(num_keys, seed);
             TestEnvironment<uint64_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
                                               seed, verbose);
-            test_algorithms(testenv, algorithm, variant);
+            test_algorithms(testenv, algorithm, variant, threads_num);
         } else {
             std::vector<uint32_t> keys = create_xorshift32_keys(num_keys, seed);
             TestEnvironment<uint32_t> testenv(std::move(keys), num_construction_runs, num_lookup_runs,
                                               seed, verbose);
-            test_algorithms(testenv, algorithm, variant);
+            test_algorithms(testenv, algorithm, variant, threads_num);
         }
     }
     return 0;
