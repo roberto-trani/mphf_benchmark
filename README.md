@@ -56,7 +56,7 @@ Usage: ./mphf_benchmark [-h,--help] algorithm [--variant variant] [-n num_keys] 
 	The name of the algorithm to run. One among `fch`, `chd`, `bbhash`, `emphf`, `recsplit`, `pthash`, `ppthash`.
 
  [--variant variant]
-	Variant of the selected algorithm to test, interpretation depends on method (default: 0 = all variants).
+	Variant of the selected algorithm to test. (default: 0 = all variants)
 
  [-n num_keys]
 	The number of random keys to use for the test. If it is not provided, then keys are read from the input (one per line).
