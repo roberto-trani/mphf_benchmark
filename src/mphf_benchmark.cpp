@@ -99,11 +99,11 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
     using Hasher = mphf::hasher::Hasher<mphf::base_hasher::Murmur2BaseHasher>;
     // test the algorithms
     if (algorithm == FCH || algorithm == ALL) {
-        if (variant == 3 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(3, 0.6, 0.3));
-        if (variant == 4 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(4, 0.6, 0.3));
-        if (variant == 5 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(5, 0.6, 0.3));
-        if (variant == 6 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(6, 0.6, 0.3));
-        if (variant == 7 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(7, 0.6, 0.3));
+        if (variant == 1 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(3, 0.6, 0.3));
+        if (variant == 2 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(4, 0.6, 0.3));
+        if (variant == 3 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(5, 0.6, 0.3));
+        if (variant == 4 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(6, 0.6, 0.3));
+        if (variant == 5 || variant == 0) testenv.test(mphf::FCH<Hasher>::Builder(7, 0.6, 0.3));
     }
 
     if (algorithm == CHD || algorithm == ALL) {
@@ -141,9 +141,9 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
             std::cerr << "RecSplit algorithm is not implemented on Apple" << std::endl;
         }
 #else
-        if (variant == 1 || variant == 5 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<5>::Builder(5));
-        if (variant == 2 || variant == 8 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<8>::Builder(100));
-        if (variant == 3 || variant == 12 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<12>::Builder(9));
+        if (variant == 1 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<5>::Builder(5));
+        if (variant == 2 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<8>::Builder(100));
+        if (variant == 3 || variant == 0) testenv.test(typename mphf::RecSplitWrapper<12>::Builder(9));
 #endif
     }
 
@@ -181,7 +181,7 @@ int main(int argc, char** argv) {
                "The name of the algorithm to run. One among `fch`, `chd`, "
                "`bbhash`, `emphf`, `recsplit`, `pthash`, `ppthash`.");
     parser.add("variant",
-               "Variant of the selected algorithm to test, interpretation depends on method. (default: 0 = all variants)",
+               "Variant of the selected algorithm to test. (default: 0 = all variants)",
                "--variant", false);
     parser.add("num_keys",
                "The number of random keys to use for the test. "
