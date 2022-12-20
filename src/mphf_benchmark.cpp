@@ -122,8 +122,6 @@ void test_algorithms(TestEnvironment<T> const& testenv, Algorithm const& algorit
 
     if (algorithm == BBhash || algorithm == ALL) {
         if (variant == 1 || variant == 0) testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.0));
-        //testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5));
-        //testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(1.5, 4));
         if (variant == 2 || variant == 0) testenv.test(typename mphf::BBhashWrapper<T, Hasher>::Builder(2.0));
         if (threads_num > 1) {
             if (variant == 3 || variant == 0)
@@ -197,7 +195,7 @@ int main(int argc, char** argv) {
     parser.add("seed", "Seed used for construction. (default: 0)", "--seed", false);
     parser.add("threads", "Number of threads used in multi-threaded calculations. (default: 0 = auto)", "--threads", false);
     parser.add("generator", "The method of generating keys, one of: "
-                "`64` (default), `xs32` (xor-shift 32), `xs64` (xor-shift 64)", "--gen", false);
+                "`64` (default if -n is given), `xs32` (xor-shift 32), `xs64` (xor-shift 64), `stdin` (strings from stdin; default if -n is not given)", "--gen", false);
     if (!parser.parse()) { return 1; }
 
     std::string algorithm_name = parser.get<std::string>("algorithm");
@@ -209,7 +207,9 @@ int main(int argc, char** argv) {
     uint32_t num_lookup_runs =
         parser.parsed("num_lookup_runs") ? parser.get<uint64_t>("num_lookup_runs") : 1;
     uint64_t seed = parser.parsed("seed") ? parser.get<uint64_t>("seed") : 0;
-    std::string generator = parser.parsed("generator") ? parser.get<std::string>("generator") : "64";
+    std::string generator = parser.parsed("generator") ?
+                parser.get<std::string>("generator") :
+                (parser.parsed("num_keys") ? "64" : "stdin");
 
     // recognize the algorithm
     const std::unordered_map<std::string, Algorithm> name_to_algorithm{
@@ -237,9 +237,12 @@ int main(int argc, char** argv) {
     if (threads_num == 0) threads_num = std::max(std::thread::hardware_concurrency(), 1u);
     std::cout << threads_num << " threads available for multi-threaded calculations" << std::endl;
 
-    if (!parser.parsed("num_keys")) {
-        std::cout << "Reading keys from stdin" << std::endl;
-        std::vector<std::string> keys = read_keys_from_stream(std::cin, '\n');
+    if (generator == "stdin") {
+        if (num_keys == 0)
+            std::cout << "Reading keys from stdin" << std::endl;
+        else
+            std::cout << "Reading up to" << num_keys << " keys from stdin" << std::endl;
+        std::vector<std::string> keys = read_keys_from_stream(std::cin, '\n', num_keys);
         double average_size =
             std::accumulate(keys.begin(), keys.end(), 0.0,
                             [](double sum, const std::string& key) { return sum + key.size(); }) /

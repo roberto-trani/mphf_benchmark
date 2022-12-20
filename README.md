@@ -77,7 +77,7 @@ Usage: ./mphf_benchmark [-h,--help] algorithm [--variant variant] [-n num_keys] 
 	Number of threads used in multi-threaded calculations. (default: 0 = auto)
 
  [--gen generator]
-	The method of generating keys, one of: `64` (default), `xs32` (xor-shift 32), `xs64` (xor-shift 64)
+	The method of generating keys, one of: `64 (default if -n is given)`, `xs32` (xor-shift 32), `xs64` (xor-shift 64), `stdin` (strings from stdin; default if -n is not given)
 
  [-h,--help]
 	Print this help text and silently exits.
