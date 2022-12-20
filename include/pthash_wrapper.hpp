@@ -13,8 +13,7 @@ template <bool partitioned, typename Encoder>
 struct PTHashWrapper {
     struct Builder {
         Builder(float c, float alpha, uint64_t num_threads = 1, uint64_t num_of_keys = 0)
-            : m_c(c), m_alpha(alpha), m_num_threads(num_threads)
-        {
+            : m_c(c), m_alpha(alpha), m_num_threads(num_threads) {
             if (c < 1.45) { throw std::invalid_argument("`c` must be greater or equal to 1.45"); }
             if (alpha <= 0 || 1 < alpha) {
                 throw std::invalid_argument(
@@ -61,10 +60,19 @@ struct PTHashWrapper {
             config.c = m_c;
             config.alpha = m_alpha;
             config.num_threads = m_num_threads;
-            if (partitioned) config.num_partitions = m_partitions;
+            if constexpr (partitioned) config.num_partitions = m_partitions;
             config.minimal_output = true;
             config.verbose_output = verbose;
             config.seed = seed;
+
+            if constexpr (!partitioned) {
+                uint64_t num_bytes_for_construction = pthash::internal_memory_builder_single_phf<
+                    pthash::murmurhash2_64>::estimate_num_bytes_for_construction(keys.size(),
+                                                                                 config);
+                std::cout << "Estimated num_bytes for construction: " << num_bytes_for_construction
+                          << " (" << static_cast<double>(num_bytes_for_construction) / keys.size()
+                          << " bytes/key)" << std::endl;
+            }
 
             pthash_wrapper.m_pthash.build_in_internal_memory(keys.begin(), keys.size(), config);
         }
@@ -81,8 +89,7 @@ struct PTHashWrapper {
     };
 
     template <typename T>
-    inline uint64_t operator()(
-        const T& key) const {  // this should be const but `lookup` is not const
+    inline uint64_t operator()(const T& key) const {
         return m_pthash(key);
     }
 
@@ -91,10 +98,9 @@ struct PTHashWrapper {
     }
 
 private:
-    std::conditional_t<partitioned,
-        pthash::partitioned_phf<pthash::murmurhash2_64, Encoder, true>,
-        pthash::single_phf<pthash::murmurhash2_64, Encoder, true>
-    > m_pthash;
+    std::conditional_t<partitioned, pthash::partitioned_phf<pthash::murmurhash2_64, Encoder, true>,
+                       pthash::single_phf<pthash::murmurhash2_64, Encoder, true> >
+        m_pthash;
 };
 
 }  // namespace mphf

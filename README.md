@@ -1,5 +1,3 @@
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/roberto-trani/mphf_benchmark.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/roberto-trani/mphf_benchmark/context:cpp)
-
 A Benchmark of Minimal Perfect Hash Function Algorithms
 =======================================================
 
