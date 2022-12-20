@@ -228,9 +228,16 @@ std::vector<uint64_t> create_xorshift64_keys(uint64_t num_keys, uint64_t seed) {
     return result;
 }
 
-std::vector<std::string> read_keys_from_stream(std::istream& is, char delimiter = '\n') {
+std::vector<std::string> read_keys_from_stream(std::istream& is, char delimiter = '\n', uint64_t num_keys = 0) {
     std::vector<std::string> keys;
     std::string line;
-    while (getline(is, line, delimiter)) { keys.push_back(line); }
+    if (num_keys != 0) {
+        keys.reserve(num_keys);
+        while (num_keys > 0 && getline(is, line, delimiter)) {
+            keys.push_back(line);
+            --num_keys;
+        }
+    } else
+        while (getline(is, line, delimiter)) { keys.push_back(line); }
     return keys;
 }
